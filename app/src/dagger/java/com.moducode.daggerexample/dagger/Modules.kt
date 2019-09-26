@@ -20,6 +20,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import timber.log.Timber
+import javax.inject.Singleton
 
 @Module
 class SchedulerModule {
@@ -46,6 +47,7 @@ class EpisodeServiceModule {
 @Module(includes = [ContextModule::class])
 class RetrofitModule {
 
+    @Singleton
     @Provides
     fun provideRetrofit(httpClient: OkHttpClient, moshi: MoshiConverterFactory, callAdapterFactory: RxJava2CallAdapterFactory): Retrofit =
             Retrofit.Builder()
@@ -55,23 +57,28 @@ class RetrofitModule {
                     .addConverterFactory(moshi)
                     .build()
 
+    @Singleton
     @Provides
     fun provideHttpClient(interceptor: Interceptor, cache: Cache): OkHttpClient =
             OkHttpClient.Builder()
                     .addNetworkInterceptor(interceptor)
                     .cache(cache)
-                    .build();
+                    .build()
 
+    @Singleton
     @Provides
     fun provideInterceptor(): Interceptor = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger { Timber.d(it) })
             .apply { level = HttpLoggingInterceptor.Level.BASIC }
 
+    @Singleton
     @Provides
     fun provideCache(context: Context): Cache = Cache(context.cacheDir, 5*5*1024)
 
+    @Singleton
     @Provides
-    fun provideRxCallAdapter(): RxJava2CallAdapterFactory = RxJava2CallAdapterFactory.create();
+    fun provideRxCallAdapter(): RxJava2CallAdapterFactory = RxJava2CallAdapterFactory.create()
 
+    @Singleton
     @Provides
     fun provideMoshi(): MoshiConverterFactory = MoshiConverterFactory.create(Moshi.Builder().add(KotlinJsonAdapterFactory()).build())
 }
