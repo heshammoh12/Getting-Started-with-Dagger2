@@ -12,13 +12,7 @@ import com.moducode.daggerexample.ui.fragment.contract.EpisodeListContract
 import dagger.internal.DaggerCollections
 
 fun EpisodeDetailFragment.buildPresenter(): EpisodeDetailContract.Actions =
-    DaggerAppComponent.builder()
-            .contextModule(ContextModule(activity?.applicationContext!!))
-            .build()
-            .buildEpisodeDetailPresenter()
+    App.getApplication(requireActivity()).component.buildEpisodeDetailPresenter()
 
 fun EpisodeListFragment.buildPresenter(): EpisodeListContract.Actions =
-    DaggerAppComponent.builder()
-            .contextModule(ContextModule(activity?.applicationContext!!))
-            .build()
-            .buildEpisodeListPresenter()
+        App.getApplication(requireActivity()).component.buildEpisodeListPresenter()
