@@ -2,6 +2,7 @@ package com.moducode.daggerexample.dagger
 
 import android.arch.persistence.room.Room
 import android.content.Context
+import com.moducode.daggerexample.Presenter
 import com.moducode.daggerexample.room.DbRepo
 import com.moducode.daggerexample.room.DbRepoImpl
 import com.moducode.daggerexample.room.EpisodeDB
@@ -25,6 +26,7 @@ import javax.inject.Singleton
 @Module
 class SchedulerModule {
 
+    @Singleton
     @Provides
     fun provideSchedulers(): SchedulersBase = SchedulersImpl()
 }
@@ -32,6 +34,7 @@ class SchedulerModule {
 @Module(includes = [ContextModule::class])
 class DatabaseModule {
 
+    @Singleton
     @Provides
     fun provideDatabase(context: Context): DbRepo =
             DbRepoImpl(Room.databaseBuilder(context, EpisodeDB::class.java, "db-episode").build())
@@ -40,14 +43,14 @@ class DatabaseModule {
 @Module(includes = [RetrofitModule::class])
 class EpisodeServiceModule {
 
+    @Presenter
     @Provides
     fun provideEpisodeService(retrofit: Retrofit): EpisodeService = retrofit.create(EpisodeService::class.java)
 }
 
-@Module(includes = [ContextModule::class])
 class RetrofitModule {
 
-    @Singleton
+    @Presenter
     @Provides
     fun provideRetrofit(httpClient: OkHttpClient, moshi: MoshiConverterFactory, callAdapterFactory: RxJava2CallAdapterFactory): Retrofit =
             Retrofit.Builder()
@@ -57,7 +60,7 @@ class RetrofitModule {
                     .addConverterFactory(moshi)
                     .build()
 
-    @Singleton
+    @Presenter
     @Provides
     fun provideHttpClient(interceptor: Interceptor, cache: Cache): OkHttpClient =
             OkHttpClient.Builder()
@@ -65,20 +68,20 @@ class RetrofitModule {
                     .cache(cache)
                     .build()
 
-    @Singleton
+    @Presenter
     @Provides
     fun provideInterceptor(): Interceptor = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger { Timber.d(it) })
             .apply { level = HttpLoggingInterceptor.Level.BASIC }
 
-    @Singleton
+    @Presenter
     @Provides
     fun provideCache(context: Context): Cache = Cache(context.cacheDir, 5*5*1024)
 
-    @Singleton
+    @Presenter
     @Provides
     fun provideRxCallAdapter(): RxJava2CallAdapterFactory = RxJava2CallAdapterFactory.create()
 
-    @Singleton
+    @Presenter
     @Provides
     fun provideMoshi(): MoshiConverterFactory = MoshiConverterFactory.create(Moshi.Builder().add(KotlinJsonAdapterFactory()).build())
 }
@@ -86,6 +89,7 @@ class RetrofitModule {
 @Module
 class ContextModule(val context: Context) {
 
+    @Singleton
     @Provides
     fun provideContext(): Context = context
 

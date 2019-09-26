@@ -15,4 +15,6 @@ fun EpisodeDetailFragment.buildPresenter(): EpisodeDetailContract.Actions =
     App.getApplication(requireActivity()).component.buildEpisodeDetailPresenter()
 
 fun EpisodeListFragment.buildPresenter(): EpisodeListContract.Actions =
-        App.getApplication(requireActivity()).component.buildEpisodeListPresenter()
+        App.getApplication(requireActivity()).component.presenterSubComponentBuilder()
+                .build()
+                .buildEpisodeListPresenter()
