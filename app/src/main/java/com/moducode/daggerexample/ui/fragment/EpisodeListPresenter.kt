@@ -10,7 +10,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @SuppressLint("CheckResult")
-class EpisodeListPresenter constructor(private val episodeService: EpisodeService,
+class EpisodeListPresenter @Inject constructor(private val episodeService: EpisodeService,
                                                private val schedulers: SchedulersBase,
                                                private val dbRepo: DbRepo)
     : MvpBasePresenter<EpisodeListContract.View>(), EpisodeListContract.Actions {

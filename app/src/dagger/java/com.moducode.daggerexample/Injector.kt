@@ -11,23 +11,14 @@ import com.moducode.daggerexample.ui.fragment.contract.EpisodeDetailContract
 import com.moducode.daggerexample.ui.fragment.contract.EpisodeListContract
 import dagger.internal.DaggerCollections
 
-fun EpisodeDetailFragment.buildPresenter(): EpisodeDetailPresenter {
-    val component = DaggerAppComponent.builder()
-            .contextModule(ContextModule(requireContext()))
+fun EpisodeDetailFragment.buildPresenter(): EpisodeDetailContract.Actions =
+    DaggerAppComponent.builder()
+            .contextModule(ContextModule(activity?.applicationContext!!))
             .build()
+            .buildEpisodeDetailPresenter()
 
-    return EpisodeDetailPresenter(component.dbRepo(), component.schedulers())
-
-}
-
-fun EpisodeListFragment.buildPresenter(): EpisodeListPresenter {
-    val component = DaggerAppComponent.builder()
-            .contextModule(ContextModule(requireContext()))
+fun EpisodeListFragment.buildPresenter(): EpisodeListContract.Actions =
+    DaggerAppComponent.builder()
+            .contextModule(ContextModule(activity?.applicationContext!!))
             .build()
-
-    return EpisodeListPresenter(component.episodeService(), component.schedulers(), component.dbRepo())
-}
-
-
-
-
+            .buildEpisodeListPresenter()
